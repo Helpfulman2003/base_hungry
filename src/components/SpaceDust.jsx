@@ -45,8 +45,8 @@ const SpaceDust = () => {
         if (p.y < 0) p.y = canvas.height;
         if (p.y > canvas.height) p.y = 0;
         
-        ctx.fillStyle = `rgba(191, 255, 0, ${p.opacity})`;
-        ctx.shadowColor = '#bfff00';
+        ctx.fillStyle = `rgba(96, 165, 250, ${p.opacity})`;
+        ctx.shadowColor = '#3b82f6';
         ctx.shadowBlur = 5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);

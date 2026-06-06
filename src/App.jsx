@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
-import Menu from './components/Menu';
-import SnakeGame from './components/SnakeGame';
-import SpaceDust from './components/SpaceDust';
+import Menu from './components/Menu.jsx';
+import SnakeGame from './components/SnakeGame.jsx';
+import SpaceDust from './components/SpaceDust.jsx';
 
 function App() {
-  const [gameState, setGameState] = useState('menu'); // menu, playing
+  const [screen, setScreen]   = useState('menu'); // 'menu' | 'playing'
+  const [wallet, setWallet]   = useState(null);   // { provider, signer, address }
 
-  const handleStartGame = () => {
-    setGameState('playing');
-  };
-
-  const handleBackToMenu = () => {
-    setGameState('menu');
-  };
+  const handleDisconnect = () => setWallet(null);
 
   return (
     <div className="app-container">
       <div className="bg-logo" />
       <SpaceDust />
-      {gameState === 'menu' && (
-        <Menu onStartGame={handleStartGame} />
+
+      {screen === 'menu' && (
+        <Menu
+          wallet={wallet}
+          onConnect={setWallet}
+          onDisconnect={handleDisconnect}
+          onStartGame={() => setScreen('playing')}
+        />
       )}
-      
-      {gameState === 'playing' && (
-        <SnakeGame onBack={handleBackToMenu} />
+
+      {screen === 'playing' && (
+        <SnakeGame
+          wallet={wallet}
+          onBack={() => setScreen('menu')}
+        />
       )}
     </div>
   );
