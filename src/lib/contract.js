@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { Attribution } from 'ox/erc8021';
 
 // ── ABI ─────────────────────────────────────────────────────────────
 export const SNAKE_FEES_ABI = [
@@ -81,15 +82,33 @@ export async function connectWallet() {
 export async function payStartFee(signer) {
   const contract = getContract(signer);
   const fee      = await contract.gameStartFee();
-  const tx       = await contract.payGameStart({ value: fee });
-  await tx.wait();
-  return tx.hash;
+  
+  // 1. Get transaction payload
+  const txRequest = await contract.payGameStart.populateTransaction({ value: fee });
+  
+  // 2. Add builder code suffix
+  const dataSuffix = Attribution.toDataSuffix({ codes: ['bc_t39ec55l'] });
+  txRequest.data = txRequest.data + dataSuffix.slice(2);
+  
+  // 3. Send via signer directly
+  const txResponse = await signer.sendTransaction(txRequest);
+  await txResponse.wait();
+  return txResponse.hash;
 }
 
 export async function payEndFee(signer) {
   const contract = getContract(signer);
   const fee      = await contract.gameEndFee();
-  const tx       = await contract.payGameEnd({ value: fee });
-  await tx.wait();
-  return tx.hash;
+  
+  // 1. Get transaction payload
+  const txRequest = await contract.payGameEnd.populateTransaction({ value: fee });
+  
+  // 2. Add builder code suffix
+  const dataSuffix = Attribution.toDataSuffix({ codes: ['bc_t39ec55l'] });
+  txRequest.data = txRequest.data + dataSuffix.slice(2);
+  
+  // 3. Send via signer directly
+  const txResponse = await signer.sendTransaction(txRequest);
+  await txResponse.wait();
+  return txResponse.hash;
 }
